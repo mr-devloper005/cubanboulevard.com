@@ -7,7 +7,13 @@ import { globalContent } from '@/editable/content/global.content'
 import { useEditableLocalAuthSession } from '@/editable/components/EditableLocalAuthForms'
 
 export function EditableFooter() {
-  const taskLinks = SITE_CONFIG.tasks.filter((task) => task.enabled)
+  const footerLinks = [
+    ['Home', '/'],
+    ['About', '/about'],
+    ['Article', '/article'],
+    ['Contact', '/contact'],
+    ['Search', '/search'],
+  ]
   const year = new Date().getFullYear()
   const { session, logout } = useEditableLocalAuthSession()
 
@@ -17,8 +23,8 @@ export function EditableFooter() {
       <div className="mx-auto grid max-w-[var(--editable-container)] gap-10 px-4 py-12 sm:px-6 lg:grid-cols-[1.2fr_1fr_1fr] lg:px-8">
         <div>
           <Link href="/" className="inline-flex items-center gap-3">
-            <span className="flex h-11 w-11 items-center justify-center border border-[var(--slot4-accent)]/40 bg-[var(--slot4-surface-bg)]">
-              <img src="/favicon.png?v=20260413" alt={SITE_CONFIG.name} className="h-8 w-8 object-contain" />
+            <span className="flex h-11 w-11 items-center justify-center overflow-hidden border border-[var(--slot4-accent)]/40 bg-[var(--slot4-surface-bg)]">
+              <img src="/favicon.png?v=20260413" alt={SITE_CONFIG.name} className="h-full w-full scale-[2] object-contain" />
             </span>
             <span className="editable-display text-xl font-semibold tracking-[0.01em]">{SITE_CONFIG.name}</span>
           </Link>
@@ -28,9 +34,9 @@ export function EditableFooter() {
         <div>
           <h3 className="text-[10px] font-semibold uppercase tracking-[0.26em] text-[var(--slot4-accent)]">Explore</h3>
           <div className="mt-4 grid gap-2">
-            {taskLinks.map((task) => (
-              <Link key={task.key} href={task.route} className="inline-flex items-center gap-2 text-sm font-medium text-[var(--slot4-muted-text)] transition hover:text-[var(--slot4-page-text)]">
-                {task.label} <ArrowUpRight className="h-3.5 w-3.5" />
+            {footerLinks.map(([label, href]) => (
+              <Link key={href} href={href} className="inline-flex items-center gap-2 text-sm font-medium text-white/65 transition hover:text-[#83ea69]">
+                {label} <ArrowUpRight className="h-3.5 w-3.5" />
               </Link>
             ))}
           </div>
@@ -40,13 +46,11 @@ export function EditableFooter() {
           <h3 className="text-[10px] font-semibold uppercase tracking-[0.26em] text-[var(--slot4-accent)]">Site</h3>
           <div className="mt-4 grid gap-2">
             {[
-              ['About', '/about'],
-              ['Contact', '/contact'],
-              ...(session ? [['Create', '/create']] : [['Login', '/login'], ['Sign up', '/signup']]),
+              ...(session ? [['Create', '/create']] : [['Login', '/login'], ['Register', '/signup']]),
             ].map(([label, href]) => (
-              <Link key={href} href={href} className="text-sm font-medium text-[var(--slot4-muted-text)] transition hover:text-[var(--slot4-page-text)]">{label}</Link>
+              <Link key={href} href={href} className="text-sm font-medium text-white/65 transition hover:text-[#83ea69]">{label}</Link>
             ))}
-            {session ? <button type="button" onClick={logout} className="text-left text-sm font-medium text-[var(--slot4-muted-text)] transition hover:text-[var(--slot4-page-text)]">Logout</button> : null}
+            {session ? <button type="button" onClick={logout} className="text-left text-sm font-medium text-white/65 transition hover:text-[#83ea69]">Logout</button> : null}
           </div>
         </div>
       </div>
