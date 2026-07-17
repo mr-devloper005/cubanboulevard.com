@@ -1,6 +1,6 @@
 'use client'
 
-import { useMemo, useState } from 'react'
+import { useState } from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { Menu, Search, UserPlus, LogIn, X, PlusCircle } from 'lucide-react'
@@ -12,10 +12,13 @@ export function EditableNavbar() {
   const [open, setOpen] = useState(false)
   const pathname = usePathname()
   const { session, logout } = useEditableLocalAuthSession()
-  const navItems = useMemo(
-    () => SITE_CONFIG.tasks.filter((task) => task.enabled).map((task) => ({ label: task.label, href: task.route })),
-    []
-  )
+  const navItems = [
+    { label: 'Home', href: '/' },
+    { label: 'About', href: '/about' },
+    { label: 'Article', href: '/article' },
+    { label: 'Contact', href: '/contact' },
+    { label: 'Search', href: '/search' },
+  ]
 
   return (
     <header className="sticky top-0 z-50 bg-[var(--editable-nav-bg)]/96 text-[var(--editable-nav-text)] backdrop-blur-md">
@@ -23,8 +26,8 @@ export function EditableNavbar() {
 
       <nav className="mx-auto flex min-h-[76px] w-full max-w-[var(--editable-container)] items-center gap-5 px-4 sm:px-6 lg:px-8">
         <Link href="/" className="group flex shrink-0 items-center gap-3 border-r border-[var(--editable-border)] pr-5">
-          <span className="flex h-11 w-11 items-center justify-center border border-[var(--slot4-accent)]/45 bg-[var(--slot4-surface-bg)] transition group-hover:border-[var(--slot4-accent)]">
-            <img src="/favicon.png?v=20260413" alt={SITE_CONFIG.name} className="h-8 w-8 object-contain" />
+          <span className="flex h-11 w-11 items-center justify-center overflow-hidden border border-[var(--slot4-accent)]/45 bg-[var(--slot4-surface-bg)] transition group-hover:border-[var(--slot4-accent)]">
+            <img src="/favicon.png?v=20260413" alt={SITE_CONFIG.name} className="h-full w-full scale-[2] object-contain" />
           </span>
           <span className="hidden min-w-0 md:block">
             <span className="editable-display block max-w-[200px] truncate text-xl font-semibold leading-none tracking-[0.01em]">{SITE_CONFIG.name}</span>
@@ -42,7 +45,7 @@ export function EditableNavbar() {
                 key={item.href}
                 href={item.href}
                 className={`relative flex items-center px-4 text-[11px] font-semibold uppercase tracking-[0.22em] transition ${
-                  active ? 'text-[var(--slot4-accent)]' : 'text-[var(--slot4-muted-text)] hover:text-[var(--slot4-page-text)]'
+                  active ? 'text-[#83ea69]' : 'text-white/65 hover:text-[#83ea69]'
                 }`}
               >
                 {item.label}
@@ -67,6 +70,7 @@ export function EditableNavbar() {
         <div className="ml-auto flex shrink-0 items-center gap-2">
           {session ? (
             <>
+              <span className="hidden max-w-32 truncate text-sm font-semibold text-white md:inline">{session.name}</span>
               <Link
                 href="/create"
                 className="hidden items-center gap-2 border border-[var(--slot4-accent)] bg-[var(--editable-cta-bg)] px-4 py-2 text-[11px] font-semibold uppercase tracking-[0.18em] text-[var(--editable-cta-text)] transition hover:opacity-90 sm:inline-flex"
@@ -76,7 +80,7 @@ export function EditableNavbar() {
               <button
                 type="button"
                 onClick={logout}
-                className="hidden items-center gap-2 px-3 py-2 text-[11px] font-semibold uppercase tracking-[0.18em] text-[var(--slot4-muted-text)] transition hover:text-[var(--slot4-page-text)] sm:inline-flex"
+                className="hidden items-center gap-2 px-3 py-2 text-[11px] font-semibold uppercase tracking-[0.18em] text-white/65 transition hover:text-[#83ea69] sm:inline-flex"
               >
                 Logout
               </button>
@@ -85,7 +89,7 @@ export function EditableNavbar() {
             <>
               <Link
                 href="/login"
-                className="hidden items-center gap-2 border border-[var(--editable-border)] px-3 py-2 text-[11px] font-semibold uppercase tracking-[0.18em] text-[var(--slot4-muted-text)] transition hover:border-[var(--slot4-accent)]/40 hover:text-[var(--slot4-page-text)] sm:inline-flex"
+                className="hidden items-center gap-2 rounded-md border border-white/20 px-3 py-2 text-[11px] font-semibold uppercase tracking-[0.18em] text-white/75 transition hover:border-[var(--slot4-accent)] hover:text-white sm:inline-flex"
               >
                 <LogIn className="h-3.5 w-3.5" /> Login
               </Link>
@@ -93,7 +97,7 @@ export function EditableNavbar() {
                 href="/signup"
                 className="hidden items-center gap-2 border border-[var(--slot4-accent)] bg-[var(--editable-cta-bg)] px-4 py-2 text-[11px] font-semibold uppercase tracking-[0.18em] text-[var(--editable-cta-text)] transition hover:opacity-90 sm:inline-flex"
               >
-                <UserPlus className="h-3.5 w-3.5" /> Sign up
+                <UserPlus className="h-3.5 w-3.5" /> Register
               </Link>
             </>
           )}
@@ -117,7 +121,7 @@ export function EditableNavbar() {
             <input name="q" type="search" placeholder="Search posts" className="min-w-0 flex-1 bg-transparent text-sm outline-none placeholder:text-[var(--slot4-muted-text)]" />
           </form>
           <div className="grid gap-1">
-            {[{ label: 'Home', href: '/' }, ...navItems, { label: 'Contact', href: '/contact' }, ...(session ? [{ label: 'Create', href: '/create' }] : [{ label: 'Login', href: '/login' }, { label: 'Sign up', href: '/signup' }])].map((item) => {
+            {[...navItems, ...(session ? [{ label: 'Create', href: '/create' }] : [{ label: 'Login', href: '/login' }, { label: 'Register', href: '/signup' }])].map((item) => {
               const active = pathname === item.href || pathname.startsWith(`${item.href}/`)
               return (
                 <Link
@@ -127,7 +131,7 @@ export function EditableNavbar() {
                   className={`border-l-2 px-4 py-3 text-sm font-semibold uppercase tracking-[0.16em] ${
                     active
                       ? 'border-[var(--slot4-accent)] bg-[var(--slot4-surface-bg)] text-[var(--slot4-accent)]'
-                      : 'border-transparent text-[var(--slot4-muted-text)] hover:border-[var(--slot4-accent)]/40 hover:bg-[var(--slot4-surface-bg)]'
+                      : 'border-transparent text-white/70 hover:border-[#83ea69] hover:bg-white/5 hover:text-[#83ea69]'
                   }`}
                 >
                   {item.label}
